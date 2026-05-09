@@ -8,7 +8,7 @@ export async function blobToMonoFloat32(blob: Blob, targetSampleRate = 16000): P
   return resampled;
 }
 
-function mixToMono(audioBuffer: AudioBuffer): Float32Array {
+export function mixToMono(audioBuffer: AudioBuffer): Float32Array {
   const channels = audioBuffer.numberOfChannels;
   const length = audioBuffer.length;
   const mono = new Float32Array(length);
@@ -23,7 +23,7 @@ function mixToMono(audioBuffer: AudioBuffer): Float32Array {
   return mono;
 }
 
-function resampleLinear(input: Float32Array, fromRate: number, toRate: number): Float32Array {
+export function resampleLinear(input: Float32Array, fromRate: number, toRate: number): Float32Array {
   if (fromRate === toRate) {
     return input;
   }
@@ -41,4 +41,22 @@ function resampleLinear(input: Float32Array, fromRate: number, toRate: number): 
   }
 
   return output;
+}
+
+/** Root-mean-square energy of an audio buffer. Returns 0 for empty input. */
+export function computeRmsEnergy(samples: Float32Array): number {
+  if (samples.length === 0) return 0;
+  let sum = 0;
+  for (let i = 0; i < samples.length; i++) {
+    sum += samples[i] * samples[i];
+  }
+  return Math.sqrt(sum / samples.length);
+}
+
+/** Concatenate two Float32Arrays into one. */
+export function mergeFloat32(a: Float32Array, b: Float32Array): Float32Array {
+  const merged = new Float32Array(a.length + b.length);
+  merged.set(a, 0);
+  merged.set(b, a.length);
+  return merged;
 }

@@ -7,6 +7,8 @@ export type CaptureStatus =
   | "error";
 
 export type EngineMode = "web-speech" | "local-whisper";
+export type Theme = "light" | "dark";
+export type WhisperModel = "tiny" | "base";
 
 export interface ExtensionSettings {
   engineMode: EngineMode;
@@ -14,6 +16,8 @@ export interface ExtensionSettings {
   targetLanguage: "en";
   chunkSeconds: number;
   showOverlay: boolean;
+  theme: Theme;
+  whisperModel: WhisperModel;
 }
 
 export interface TranscriptSegment {
@@ -27,20 +31,30 @@ export interface TranscriptSegment {
   isFinal: boolean;
 }
 
+export interface ModelProgress {
+  file: string;
+  progress: number;
+  status: "loading" | "done";
+}
+
 export interface RuntimeState {
   status: CaptureStatus;
   activeTabId?: number;
   error?: string;
   settings: ExtensionSettings;
   latestSegment?: TranscriptSegment;
+  modelProgress?: ModelProgress;
+  inferenceDevice?: "webgpu" | "wasm";
 }
 
 export const DEFAULT_SETTINGS: ExtensionSettings = {
   engineMode: "local-whisper",
   sourceLanguage: "auto",
   targetLanguage: "en",
-  chunkSeconds: 6,
-  showOverlay: true
+  chunkSeconds: 3,
+  showOverlay: true,
+  theme: "light",
+  whisperModel: "base"
 };
 
 export const STORAGE_KEYS = {

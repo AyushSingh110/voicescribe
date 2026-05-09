@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Live English Transcriber",
   "description": "Capture tab audio, transcribe speech, and show English subtitles locally where possible.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "minimum_chrome_version": "116",
   "action": {
     "default_title": "Live English Transcriber",
@@ -12,12 +12,24 @@
     "service_worker": "assets/background.js",
     "type": "module"
   },
+  "commands": {
+    "toggle-overlay": {
+      "suggested_key": {
+        "default": "Alt+T",
+        "mac": "Alt+T"
+      },
+      "description": "Toggle the live subtitle overlay on/off"
+    }
+  },
   "permissions": [
     "activeTab",
     "offscreen",
     "storage",
     "tabCapture",
     "scripting"
+  ],
+  "optional_permissions": [
+    "microphone"
   ],
   "host_permissions": [
     "<all_urls>"

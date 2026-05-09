@@ -1,4 +1,4 @@
-import type { ExtensionSettings, RuntimeState, TranscriptSegment } from "./types";
+import type { ExtensionSettings, ModelProgress, RuntimeState, TranscriptSegment } from "./types";
 
 export type ExtensionMessage =
   | { type: "POPUP_GET_STATE" }
@@ -9,6 +9,8 @@ export type ExtensionMessage =
   | { type: "OFFSCREEN_START_CAPTURE"; streamId: string; tabId: number; settings: ExtensionSettings }
   | { type: "OFFSCREEN_STOP_CAPTURE" }
   | { type: "OFFSCREEN_STATUS"; status: RuntimeState["status"]; error?: string }
+  | { type: "OFFSCREEN_MODEL_PROGRESS"; progress: ModelProgress }
+  | { type: "OFFSCREEN_INFERENCE_DEVICE"; device: "webgpu" | "wasm" }
   | { type: "TRANSCRIPT_SEGMENT"; segment: TranscriptSegment }
   | { type: "CONTENT_SHOW_SEGMENT"; segment: TranscriptSegment }
   | { type: "CONTENT_SET_VISIBILITY"; visible: boolean };

@@ -196,17 +196,26 @@ The `TranscriptionEngine` interface in `src/transcription/engine.ts` makes it tr
 
 ## Roadmap
 
-- [ ] Implement Web Speech API engine (currently scaffolded)
-- [ ] Model download progress indicator on first use
-- [ ] Service worker keepalive for long capture sessions
-- [ ] Silence-based audio chunking (instead of fixed 6s intervals)
-- [ ] Upgrade to `whisper-base` for better accuracy
-- [ ] Timestamps in transcript segments
-- [ ] Export as `.srt` subtitle file
-- [ ] Resizable overlay
-- [ ] Keyboard shortcut to toggle overlay
-- [ ] Search within transcript
-- [ ] Dark / light theme toggle
+- [x] Implement Web Speech API engine (mic-based, continuous mode)
+- [x] Model download progress indicator on first use
+- [x] Service worker keepalive for long capture sessions
+- [x] Silence detection — skip silent audio chunks automatically
+- [x] Upgrade to `whisper-base` for better accuracy
+- [x] 0.5 s audio overlap between chunks to prevent word cutoff
+- [x] Timestamps in transcript segments
+- [x] Export as `.srt` subtitle file
+- [x] Export as `.txt` with timestamps
+- [x] Resizable overlay (drag corner to resize)
+- [x] Keyboard shortcut `Alt+T` to toggle overlay
+- [x] Search / filter within transcript
+- [x] Copy individual segment to clipboard
+- [x] Auto-scroll transcript to latest segment
+- [x] Word count and elapsed duration stats
+- [x] Dark / light theme toggle
+- [x] Unit tests for audio processing utilities (Vitest)
+- [ ] LibreTranslate integration for real-time translation (self-hosted, free)
+- [ ] Speaker diarisation (identify different speakers)
+- [ ] Firefox support (requires alternative to `tabCapture`)
 
 ---
 

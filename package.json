@@ -1,15 +1,18 @@
 {
   "name": "live-english-transcriber",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Privacy-first browser extension MVP for live English transcription and translation of tab audio.",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
+    "watch": "vite build --watch",
     "preview": "vite preview --host 127.0.0.1",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.8.1",
@@ -23,7 +26,10 @@
     "@types/chrome": "^0.0.287",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "@vitest/ui": "^2.0.0",
     "eslint": "^9.17.0",
-    "typescript": "^5.7.2"
+    "jsdom": "^25.0.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.0.0"
   }
 }

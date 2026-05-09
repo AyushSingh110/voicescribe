@@ -70,7 +70,7 @@ async function getTabMediaStreamId(tabId: number): Promise<string> {
 async function stopCapture(): Promise<RuntimeState> {
   await setState({ status: "stopping" });
   await chrome.runtime.sendMessage({ type: "OFFSCREEN_STOP_CAPTURE" } satisfies ExtensionMessage).catch(() => undefined);
-  return setState({ status: "idle", activeTabId: undefined });
+  return setState({ status: "idle", activeTabId: undefined, modelProgress: undefined, inferenceDevice: undefined });
 }
 
 async function forwardSegment(segment: TranscriptSegment): Promise<void> {
@@ -86,6 +86,32 @@ async function forwardSegment(segment: TranscriptSegment): Promise<void> {
     segment
   } satisfies ExtensionMessage).catch(() => undefined);
 }
+
+// --- Keepalive: accept connections from the offscreen document ---
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name !== "keepalive") return;
+  port.onMessage.addListener(() => { /* intentional no-op — connection existence keeps worker alive */ });
+});
+
+// --- Keyboard command: Alt+T toggles the overlay ---
+chrome.commands.onCommand.addListener((command) => {
+  if (command !== "toggle-overlay") return;
+
+  void (async () => {
+    const state = await ensureState();
+    const next = !state.settings.showOverlay;
+    const nextSettings = { ...state.settings, showOverlay: next };
+    await saveSettings(nextSettings);
+    await setState({ settings: nextSettings });
+
+    if (state.activeTabId) {
+      await chrome.tabs.sendMessage(state.activeTabId, {
+        type: "CONTENT_SET_VISIBILITY",
+        visible: next
+      } satisfies ExtensionMessage).catch(() => undefined);
+    }
+  })();
+});
 
 chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse) => {
   if (!isExtensionMessage(message)) {
@@ -123,6 +149,12 @@ chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse) =
 
         case "OFFSCREEN_STATUS":
           return { ok: true, data: await setState({ status: message.status, error: message.error }) };
+
+        case "OFFSCREEN_MODEL_PROGRESS":
+          return { ok: true, data: await setState({ modelProgress: message.progress }) };
+
+        case "OFFSCREEN_INFERENCE_DEVICE":
+          return { ok: true, data: await setState({ inferenceDevice: message.device }) };
 
         case "TRANSCRIPT_SEGMENT":
           await forwardSegment(message.segment);
